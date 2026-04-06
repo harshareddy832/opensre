@@ -144,8 +144,12 @@ def _run_remote_interactive(ctx: click.Context) -> None:
 
 
 @click.group(name="remote", invoke_without_command=True)
-@click.option("--url", default=None, help="Remote agent base URL (e.g. 1.2.3.4 or http://host:2024).")
-@click.option("--api-key", default=None, envvar="OPENSRE_API_KEY", help="API key for the remote agent.")
+@click.option(
+    "--url", default=None, help="Remote agent base URL (e.g. 1.2.3.4 or http://host:2024)."
+)
+@click.option(
+    "--api-key", default=None, envvar="OPENSRE_API_KEY", help="API key for the remote agent."
+)
 @click.pass_context
 def remote(ctx: click.Context, url: str | None, api_key: str | None) -> None:
     """Connect to and trigger a remote deployed agent."""
@@ -190,9 +194,7 @@ def remote_trigger(ctx: click.Context, alert_json: str | None) -> None:
         missing_url_hint="Pass a URL or run 'opensre remote trigger <url>'.",
     )
     try:
-        events = client.trigger_investigation(
-            _parse_alert_json(alert_json) if alert_json else None
-        )
+        events = client.trigger_investigation(_parse_alert_json(alert_json) if alert_json else None)
         StreamRenderer().render_stream(events)
         _save_remote_base_url(client)
     except httpx.TimeoutException as exc:
@@ -203,7 +205,9 @@ def remote_trigger(ctx: click.Context, alert_json: str | None) -> None:
 
 @remote.command(name="investigate")
 @click.option("--alert-json", default=None, help="Inline alert JSON payload string.")
-@click.option("--sample", is_flag=True, default=False, help="Use the built-in sample alert payload.")
+@click.option(
+    "--sample", is_flag=True, default=False, help="Use the built-in sample alert payload."
+)
 @click.pass_context
 def remote_investigate(ctx: click.Context, alert_json: str | None, sample: bool) -> None:
     """Run an investigation on the lightweight remote server."""
@@ -241,7 +245,9 @@ def remote_investigate(ctx: click.Context, alert_json: str | None, sample: bool)
 
 
 @remote.command(name="pull")
-@click.option("--latest", is_flag=True, default=False, help="Download only the most recent investigation.")
+@click.option(
+    "--latest", is_flag=True, default=False, help="Download only the most recent investigation."
+)
 @click.option("--all", "pull_all", is_flag=True, default=False, help="Download all investigations.")
 @click.option("--output-dir", default="./investigations", help="Directory to save .md files to.")
 @click.pass_context

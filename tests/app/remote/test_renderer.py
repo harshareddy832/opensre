@@ -18,27 +18,39 @@ def _investigation_events() -> Iterator[StreamEvent]:
     """Simulate a minimal investigation stream."""
     yield _make_event("metadata", data={"run_id": "r-1"})
     yield _make_event(
-        "updates", "extract_alert",
-        {"extract_alert": {"alert_name": "test-alert", "pipeline_name": "etl", "severity": "critical"}},
+        "updates",
+        "extract_alert",
+        {
+            "extract_alert": {
+                "alert_name": "test-alert",
+                "pipeline_name": "etl",
+                "severity": "critical",
+            }
+        },
     )
     yield _make_event(
-        "updates", "resolve_integrations",
+        "updates",
+        "resolve_integrations",
         {"resolve_integrations": {"resolved_integrations": {"grafana": {}}}},
     )
     yield _make_event(
-        "updates", "plan_actions",
+        "updates",
+        "plan_actions",
         {"plan_actions": {"planned_actions": ["query_grafana_logs"]}},
     )
     yield _make_event(
-        "updates", "investigate",
+        "updates",
+        "investigate",
         {"investigate": {"evidence": {"logs": "error found"}}},
     )
     yield _make_event(
-        "updates", "diagnose",
+        "updates",
+        "diagnose",
         {"diagnose": {"root_cause": "Schema mismatch", "validity_score": 0.85}},
     )
     yield _make_event(
-        "updates", "publish",
+        "updates",
+        "publish",
         {"publish": {"report": "Investigation complete."}},
     )
     yield _make_event("end")
@@ -96,7 +108,8 @@ class TestStreamRenderer:
         def noise_events() -> Iterator[StreamEvent]:
             yield _make_event("metadata", data={"run_id": "r-2"})
             yield _make_event(
-                "updates", "extract_alert",
+                "updates",
+                "extract_alert",
                 {"extract_alert": {"is_noise": True, "alert_name": "noise"}},
             )
             yield _make_event("end")

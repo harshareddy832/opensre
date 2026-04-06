@@ -43,10 +43,10 @@ def parse_sse_stream(response: httpx.Response) -> Iterator[StreamEvent]:
 
     for line in response.iter_lines():
         if line.startswith("event:"):
-            current_event_type = line[len("event:"):].strip()
+            current_event_type = line[len("event:") :].strip()
             data_lines = []
         elif line.startswith("data:"):
-            data_lines.append(line[len("data:"):].strip())
+            data_lines.append(line[len("data:") :].strip())
         elif line == "":
             if current_event_type and data_lines:
                 raw = "\n".join(data_lines)

@@ -157,7 +157,11 @@ class TestRunStreamedInvestigation:
         events = iter(
             [
                 StreamEvent("metadata", data={"run_id": "r-1"}),
-                StreamEvent("updates", node_name="extract_alert", data={"extract_alert": {"alert_name": "a"}}),
+                StreamEvent(
+                    "updates",
+                    node_name="extract_alert",
+                    data={"extract_alert": {"alert_name": "a"}},
+                ),
                 StreamEvent(
                     "updates",
                     node_name="diagnose",

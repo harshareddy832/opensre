@@ -57,28 +57,32 @@ class TestParseSSEStream:
         return resp
 
     def test_single_event(self) -> None:
-        resp = self._make_response([
-            "event: updates",
-            'data: {"extract_alert": {"alert_name": "test"}}',
-            "",
-        ])
+        resp = self._make_response(
+            [
+                "event: updates",
+                'data: {"extract_alert": {"alert_name": "test"}}',
+                "",
+            ]
+        )
         events = list(parse_sse_stream(resp))
         assert len(events) == 1
         assert events[0].event_type == "updates"
         assert events[0].node_name == "extract_alert"
 
     def test_multiple_events(self) -> None:
-        resp = self._make_response([
-            "event: metadata",
-            'data: {"run_id": "abc"}',
-            "",
-            "event: updates",
-            'data: {"plan_actions": {"planned_actions": ["query_logs"]}}',
-            "",
-            "event: end",
-            "data: {}",
-            "",
-        ])
+        resp = self._make_response(
+            [
+                "event: metadata",
+                'data: {"run_id": "abc"}',
+                "",
+                "event: updates",
+                'data: {"plan_actions": {"planned_actions": ["query_logs"]}}',
+                "",
+                "event: end",
+                "data: {}",
+                "",
+            ]
+        )
         events = list(parse_sse_stream(resp))
         assert len(events) == 3
         assert events[0].event_type == "metadata"
@@ -86,21 +90,25 @@ class TestParseSSEStream:
         assert events[2].event_type == "end"
 
     def test_multiline_data(self) -> None:
-        resp = self._make_response([
-            "event: updates",
-            'data: {"investigate":',
-            'data:  {"evidence": "found"}}',
-            "",
-        ])
+        resp = self._make_response(
+            [
+                "event: updates",
+                'data: {"investigate":',
+                'data:  {"evidence": "found"}}',
+                "",
+            ]
+        )
         events = list(parse_sse_stream(resp))
         assert len(events) == 1
         assert events[0].data == {"investigate": {"evidence": "found"}}
 
     def test_trailing_event_without_blank_line(self) -> None:
-        resp = self._make_response([
-            "event: end",
-            "data: {}",
-        ])
+        resp = self._make_response(
+            [
+                "event: end",
+                "data: {}",
+            ]
+        )
         events = list(parse_sse_stream(resp))
         assert len(events) == 1
         assert events[0].event_type == "end"
@@ -111,11 +119,13 @@ class TestParseSSEStream:
         assert len(events) == 0
 
     def test_ignores_non_event_lines(self) -> None:
-        resp = self._make_response([
-            ": comment line",
-            "event: updates",
-            'data: {"x": {}}',
-            "",
-        ])
+        resp = self._make_response(
+            [
+                ": comment line",
+                "event: updates",
+                'data: {"x": {}}',
+                "",
+            ]
+        )
         events = list(parse_sse_stream(resp))
         assert len(events) == 1
